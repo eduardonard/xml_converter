@@ -1,0 +1,44 @@
+version: '3.9'
+
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  flake8:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: flake8
+    volumes:
+      - .:/app
+    command: ["sh", "-c", "flake8 . --config=flake8.cfg"]
+
+  tests-e2e:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tests-E2E
+    volumes:
+      - .:/app
+    command:  pytest -s -v -m integration
+    depends_on:
+      - dev
+  
+  tests-unit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tests-unit
+    volumes:
+      - .:/app
+    command:  pytest -s -m unit
+    depends_on:
+      - dev

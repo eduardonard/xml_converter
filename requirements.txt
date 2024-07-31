@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+python-dotenv
+pytest
+pytest-asyncio
+respx
+flake8
